@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChatBuzz</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css
+  " rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+    crossorigin="anonymous">
+  <link rel="icon" type="image/png"
+    href="https://img.freepik.com/free-vector/chat-messenger-window-web-icon-design-element_460848-8909.jpg?t=st=1711958115~exp=1711961715~hmac=8fe3c37ddca5a5d5a5bfe420da26c320ebbb6095af14a957337b344db67590d6&w=740">
+</head>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  body,
+  html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Style the conversation scrollbar */
+  .conversation::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .conversation::-webkit-scrollbar-track {
+    background: white;
+  }
+
+  .conversation::-webkit-scrollbar-thumb {
+    background: #a5a3a3;
+    border-radius: 10px;
+  }
+
+  .conversation::-webkit-scrollbar-thumb:hover {
+    background: #a5a3a3;
+  }
+
+  .left {
+    width: 25%;
+  }
+
+  @media (max-width: 600px) {
+    .left {
+      width: 100%;
+    }
+  }
+
+  .right {
+    width: 75%;
+  }
+
+  @media (max-width: 600px) {
+    .right {
+      display: none;
+    }
+  }
+  .conversation{
+    height:83vh;
+  }
+  @media(max-width: 600px) {
+    .conversation{
+      height: 70vh;
+    }
+  }
+</style>
+
+<body style="margin: 0; padding: 0;">
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Search Box</h5>
+          <button type="button" class="close border-0 bg-white fs-2" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body ">
+          <form id="findUserForm" class="d-flex gap-2">
+            <input id="findUserQuery" class="form-control" type="text" name="username" placeholder="Enter username">
+            <button class="btn btn-success">Search</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div id="main" class="w-100 h-100  d-flex text-light ">
+    <div class="left h-100  border-end no-margin" style=" background-color: #EDF2F4; margin: 0;">
+      <div class="user p-2 d-flex align-items-center gap-2 border-bottom " style=" background-color: #FF4361;">
+        <img style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" src="<%= user.pic %>" alt="">
+        <!-- <p><%=  console.log(user.username)%></p> -->
+        <p class="m-0 fs-2 ">
+          <%= user.username %>
+        </p>
+        <i data-bs-toggle="modal" data-bs-target="#exampleModalCenter" class="ri-add-line"
+          style="margin-left: auto; font-size: 20px; cursor: pointer;"></i>
+          <i onclick="logouthandler()" style="cursor: pointer; font-size: 20px;" class="ri-logout-box-line"></i>
+      </div>
+      <div class="chatdiv p-2 m" style=" color: black;  ">
+        <h3>Chats</h3>
+        <% for (const addUser of addUsers) { %>
+          <div class="user">
+            <script>
+              function addChat(username, image) {
+                document.querySelector('.chatdiv').innerHTML += ` <div onclick="openChat('${username}','${image}')" class="chats d-flex align-items-center gap-2 p-1 rounded-2" style=" cursor: pointer; margin-top:10px;  background-color: #CCCCCC; color: black;">
+                  <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;background-position:left;" src="${image}" alt="">
+                  <p class="m-0">${username}</p>
+                </div>`
+
+              }
+              addChat('<%= addUser.username %>', '<%= addUser.pic %>');
+
+            </script>
+          </div>
+          <% } %>
+      </div>
+
+
+    </div>
+    <div class="right h-100  no-margin"
+      style="background-color: #DFE5EA; color: rgb(56, 52, 52); background-size: contain; background-position: bottom; background-repeat: no-repeat;  margin: 0;">
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js
+    "></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+    integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+      const logouthandler= async()=>{
+        const response = await axios.get('/logout',{});
+        window.location.reload();
+      }
+    var oppositeUser
+    function addChat(username, image) {
+      document.querySelector('.chatdiv').innerHTML += ` <div onclick="openChat('${username}','${image}')" class="chats d-flex align-items-center gap-2 p-1 rounded-2" style=" cursor: pointer; margin-top:10px;  background-color: #CCCCCC; color: black;">
+                  <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;background-position:left;" src="${image}" alt="">
+                  <p class="m-0">${username}</p>
+                </div>`
+    }
+    // console.log('addUsers:', addUsers);
+    async function openChat(username, image) {
+      if (window.matchMedia("(max-width: 600px)").matches) {
+        // Execute the following code only when in mobile view
+        document.querySelector('.right').style.display = 'initial';
+        document.querySelector('.right').style.width = '100%';
+        document.querySelector('.left').style.display = 'none';
+        // document.querySelector('.reverse').style.display = 'block';
+      }
+      oppositeUser = username;
+      // console.log(oppositeUser)
+      var { data: { chats, forImg } } = await axios.post('/findchats', {
+        oppositeUser
+      })
+      // console.log("chat "+chats+"and for image "+ forImg.pic)
+      // console.log("chats = "+chats);
+      var clutter = '';
+      chats.forEach(function (chats) {
+
+        if (chats.fromUser == oppositeUser) {
+          // console.log("oppp " + image)
+          clutter += `
+          <div class="d-flex gap-3 align-items-center p-2 mb-0">
+            <img style="height: 30px; width: 30px; border-radius: 50%; object-fit: cover; background-position: left;" src="${image}" alt="">
+    <div class="incoming_msg bg-white fs-5 rounded-3" style="padding: 2px 10px; max-width: 500px; width: fit-content; color: #494949; word-wrap: break-word;">
+        ${chats.data}
+    </div>
+</div>`
+        }
+        else
+          clutter +=
+            `
+          <div class="outgoing_msg ms-auto mb-2 p-2 fs-5 rounded-3" style="max-width:500px; width: fit-content; color: White; background-color:red; word-wrap: break-word">${chats.data} </div>
+          
+          `
+      })
+
+      document.querySelector(".right").innerHTML = ` 
+      <div class="nav p-2 border-bottom align-items-center d-flex gap-2" style="height: 4.19rem; justify-content:space-between; background-color: #FF4361;">
+       <div style="display:flex; align-items:center; gap:15px; "> 
+        <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover; " src="${image}" alt="">
+          <p class="m-0" style="font-size:30px;" >${username}</p>
+          </div>
+          <h1 class="reverse" onClick=reverseMobile() style ="color:rgb(56, 52, 52); display:none; cursor:pointer; z-index:200000; "><i class="ri-arrow-left-line"></i></h1>
+      </div>
+      <div class="conversation p-2 " style=" overflow-y: auto;" >
+        ${clutter}
+      </div>  
+      <input type="text" onchange="sendmessage(event)" placeholder="Write  a message" style=" border: none; outline: none; padding: 30px 0px 50px 20px; height: 70px; width: 100%;  background-color: #EDF2F4 ;">`
+      if (window.matchMedia("(max-width: 600px)").matches) {
+        // Execute the following code only when in mobile view
+        document.querySelector('.reverse').style.display = 'block';
+      }
+      var conversationContainer = document.querySelector(".conversation");
+      conversationContainer.scrollTop = conversationContainer.scrollHeight;
+    }
+    const reverseMobile = () => {
+      document.querySelector('.right').style.display = 'none';
+      document.querySelector('.right').style.width = '0%';
+      document.querySelector('.left').style.display = 'initial';
+    }
+    var form = document.querySelector("#findUserForm").addEventListener('submit', async (event) => {
+      event.preventDefault();
+      var query = document.querySelector("#findUserQuery").value
+      // console.log(query)
+      try {
+        var response = await axios.post('/finduser', {
+          username: query,
+        })
+      } catch (error) {
+        alert("user not found")
+      }
+
+      // console.log(response.data)
+      var findUser = response.data.user;
+      if (findUser) {
+        addChat(findUser.username, findUser.pic)
+        document.querySelector("#findUserQuery").value = '';
+        var myModalEl = document.querySelector("#exampleModalCenter");
+        var modal = bootstrap.Modal.getInstance(myModalEl);
+        modal.hide();
+
+      }
+    })
+    var sendmessage = (event) => {
+      //  console.log("this is message")
+      var msg = event.target.value;
+      // Adding the outgoing message to the conversation
+      document.querySelector('.conversation').innerHTML += `<div class="outgoing_msg ms-auto mb-2 p-2 fs-5 rounded-3" style="max-width:500px; width: fit-content; color: White; background-color:red; word-wrap: break-word;">${msg}</div>`;
+
+      // console.log(msg);
+      var payload = {
+        msg,
+        toUser: oppositeUser,
+        fromUser: username
+      }
+
+      // document.querySelector('.conversation').innerHTML+=`<div class="outing_msg ms-auto p-2 bg-white rounded-1" style="width: fit-content; color: black;">${msg}</div>`
+
+      document.querySelector('.conversation').scrollTo(0, document.querySelector('.conversation').scrollHeight);
+      socket.emit('newmsg', payload)
+      // console.log(payload)
+      event.target.value = ""
+    }
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var username = '<%= user.username %>'
+    var socket = io();
+    socket.emit('userConnected', {
+      username
+    })
+    socket.on('msg', (msg) => {
+      // console.log(msg + "asdv")
+      // console.log("msg.NewChat:", msg.NewChat);
+      console.log("pic = ", msg.fromUserPic);
+      if (msg.NewChat === true) {
+        addChat(msg.fromUser, msg.fromUserPic)
+        // console.log("addchat fir s chala")
+      }
+      else {
+        if (msg.fromUser == oppositeUser) {
+          document.querySelector('.conversation').innerHTML += `
+          <div class="d-flex gap-3 align-items-center p-2 mb-0">
+          <img style="height: 30px; width: 30px; border-radius: 50%; object-fit: cover; background-position: left;" src="${msg.fromUserPic}" alt="">
+          <div class="incoming_msg bg-white fs-5 rounded-3" style="padding: 2px 10px; max-width: 500px; width: fit-content; color: #494949; word-wrap: break-word;">${msg.msg}</div>
+          `
+          document.querySelector('.conversation').scrollTo(0, document.querySelector('.conversation').scrollHeight);
+
+        }
+      }
+
+    })
+    socket.on('disconnect', async () => {
+      try {
+        // Update user's status in the database (if needed)
+        await users.findOneAndUpdate(
+          { currentSocket: socket.id },
+          { currentSocket: "" }
+        );
+
+        // Perform any other cleanup or notification tasks here
+
+        // console.log('User disconnected:', socket.id);
+      } catch (error) {
+        // console.error('Error handling disconnect:', error);
+      }
+    });
+
+  </script>
+</body>
+
+</html>
