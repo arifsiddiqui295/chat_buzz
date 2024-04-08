@@ -4,8 +4,19 @@ var users = require("./users");
 var msg = require("./msg");
 var passport = require("passport");
 var localStrategy = require("passport-local");
+const multer = require("multer");
 passport.use(new localStrategy(users.authenticate()));
-require('dotenv').config()
+require("dotenv").config();
+// const upload= multer({dest:"uploads/"})
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    return cb(null, 'public/backend/images')
+  },
+  filename: function (req, file, cb) {
+    return cb(null,`${req.body.username}-${file.originalname}`)
+  },
+});
+const upload = multer({ storage });
 function isloggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -38,11 +49,14 @@ router.get("/", isloggedIn, async function (req, res, next) {
 // })
 
 // user authentication related routes
-router.post("/register", (req, res, next) => {
+router.post("/register", upload.single("pic"), (req, res, next) => {
+  console.log(req.body);
+  console.log(req.file.filename);
+  // return res.redirect("/");
   var newUser = {
     //user data here
     username: req.body.username,
-    pic: req.body.pic,
+    pic: req.file.filename,
     //user data here
   };
 
@@ -54,7 +68,7 @@ router.post("/register", (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.send(err);
+      res.render('error', { errorMessage: err });
     });
 });
 router.get("/register", (req, res, next) => {
@@ -66,12 +80,13 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
-    failureFlash: true // Enable flash messages for displaying error messages
+    failureFlash: true, // Enable flash messages for displaying error messages
   }),
   (err, req, res, next) => {
     // Handle errors that occurred during authentication
     console.error(err.message); // Log the error message
-    res.status(500).send("Internal Server Error"); // Send a 500 response
+    res.render('error', { errorMessage: "Check Username Or Password" });
+ // Send a 500 response
   }
 );
 
@@ -80,7 +95,7 @@ router.get("/login", (req, res, next) => {
 });
 // logout
 router.get("/logout", (req, res, next) => {
-  console.log("logged out")
+  console.log("logged out");
   if (req.isAuthenticated())
     req.logout((err) => {
       if (err) res.send(err);
@@ -104,13 +119,13 @@ router.post("/finduser", async (req, res, next) => {
 
   if (findUser) {
     // Check if the user is in any chats
-    const presentUser= req.session.passport.user;
-    const userPresent= await users.findOne({
-      username:presentUser
-    })
+    const presentUser = req.session.passport.user;
+    const userPresent = await users.findOne({
+      username: presentUser,
+    });
     // console.log("presetn uer =",presentUser)
     // console.log("user present =",userPresent)
-    const otherPersonId = userPresent._id.toString(); 
+    const otherPersonId = userPresent._id.toString();
     // console.log("other person id = ",otherPersonId)
     const userInChats = await users.findOne({
       _id: findUser._id,

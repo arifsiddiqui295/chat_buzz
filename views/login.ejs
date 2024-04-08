@@ -409,14 +409,14 @@
 
                             <input type="submit" value="Sign In" class="sign-btn" />
 
-                            <p class="text">
+                            <!-- <p class="text">
                                 Forgotten your password or you login datails?
                                 <a href="#">Get help</a> signing in
-                            </p>
+                            </p> -->
                         </div>
                     </form>
 
-                    <form action="/register" method="post" autocomplete="off" class="sign-up-form">
+                    <form action="/register" method="post" enctype="multipart/form-data" autocomplete="off" class="sign-up-form">
                         <div class="logo">
                             <img
                                 src='https://img.freepik.com/free-vector/chat-messenger-window-web-icon-design-element_460848-8909.jpg?t=st=1711958115~exp=1711961715~hmac=8fe3c37ddca5a5d5a5bfe420da26c320ebbb6095af14a957337b344db67590d6&w=740' />
@@ -436,8 +436,10 @@
                             </div>
 
                             <div class="input-wrap">
-                                <input type="text" name="pic" class="input-field" autocomplete="off" required />
-                                <label>Your Image</label>
+                                <input 
+                                style="cursor: pointer;"
+                                type="file" name="pic" class="input-field" autocomplete="off" required />
+                                <!-- <label>Your Image</label> -->
                             </div>
 
                             <div class="input-wrap">

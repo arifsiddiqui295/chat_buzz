@@ -97,7 +97,8 @@
   <div id="main" class="w-100 h-100  d-flex text-light ">
     <div class="left h-100  border-end no-margin" style=" background-color: #EDF2F4; margin: 0;">
       <div class="user p-2 d-flex align-items-center gap-2 border-bottom " style=" background-color: #FF4361;">
-        <img style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" src="<%= user.pic %>" alt="">
+        <img style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" 
+        src="/backend/images/<%=user.pic %>" alt="">
         <!-- <p><%=  console.log(user.username)%></p> -->
         <p class="m-0 fs-2 ">
           <%= user.username %>
@@ -113,7 +114,7 @@
             <script>
               function addChat(username, image) {
                 document.querySelector('.chatdiv').innerHTML += ` <div onclick="openChat('${username}','${image}')" class="chats d-flex align-items-center gap-2 p-1 rounded-2" style=" cursor: pointer; margin-top:10px;  background-color: #CCCCCC; color: black;">
-                  <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;background-position:left;" src="${image}" alt="">
+                  <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;background-position:left;" src="/backend/images/${image}" alt="">
                   <p class="m-0">${username}</p>
                 </div>`
 
@@ -144,7 +145,7 @@
     var oppositeUser
     function addChat(username, image) {
       document.querySelector('.chatdiv').innerHTML += ` <div onclick="openChat('${username}','${image}')" class="chats d-flex align-items-center gap-2 p-1 rounded-2" style=" cursor: pointer; margin-top:10px;  background-color: #CCCCCC; color: black;">
-                  <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;background-position:left;" src="${image}" alt="">
+                  <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;background-position:left;" src="/backend/images/${image}" alt="">
                   <p class="m-0">${username}</p>
                 </div>`
     }
@@ -171,7 +172,7 @@
           // console.log("oppp " + image)
           clutter += `
           <div class="d-flex gap-3 align-items-center p-2 mb-0">
-            <img style="height: 30px; width: 30px; border-radius: 50%; object-fit: cover; background-position: left;" src="${image}" alt="">
+            <img style="height: 30px; width: 30px; border-radius: 50%; object-fit: cover; background-position: left;" src="/backend/images/${image}" alt="">
     <div class="incoming_msg bg-white fs-5 rounded-3" style="padding: 2px 10px; max-width: 500px; width: fit-content; color: #494949; word-wrap: break-word;">
         ${chats.data}
     </div>
@@ -188,7 +189,7 @@
       document.querySelector(".right").innerHTML = ` 
       <div class="nav p-2 border-bottom align-items-center d-flex gap-2" style="height: 4.19rem; justify-content:space-between; background-color: #FF4361;">
        <div style="display:flex; align-items:center; gap:15px; "> 
-        <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover; " src="${image}" alt="">
+        <img style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover; " src="/backend/images/${image}" alt="">
           <p class="m-0" style="font-size:30px;" >${username}</p>
           </div>
           <h1 class="reverse" onClick=reverseMobile() style ="color:rgb(56, 52, 52); display:none; cursor:pointer; z-index:200000; "><i class="ri-arrow-left-line"></i></h1>
@@ -272,7 +273,7 @@
         if (msg.fromUser == oppositeUser) {
           document.querySelector('.conversation').innerHTML += `
           <div class="d-flex gap-3 align-items-center p-2 mb-0">
-          <img style="height: 30px; width: 30px; border-radius: 50%; object-fit: cover; background-position: left;" src="${msg.fromUserPic}" alt="">
+          <img style="height: 30px; width: 30px; border-radius: 50%; object-fit: cover; background-position: left;" src="/backend/images/${msg.fromUserPic}" alt="">
           <div class="incoming_msg bg-white fs-5 rounded-3" style="padding: 2px 10px; max-width: 500px; width: fit-content; color: #494949; word-wrap: break-word;">${msg.msg}</div>
           `
           document.querySelector('.conversation').scrollTo(0, document.querySelector('.conversation').scrollHeight);
